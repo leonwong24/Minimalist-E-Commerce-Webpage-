@@ -85,7 +85,8 @@ CREATE TABLE `itemstock` (
   `itemId` int(11) NOT NULL,
   `size` decimal(3,1) NOT NULL,
   `quantity` int(2) NOT NULL,
-  PRIMARY KEY (`itemId`,`size`)
+  PRIMARY KEY (`itemId`,`size`),
+  CONSTRAINT `fk_itemid` FOREIGN KEY (`itemId`) REFERENCES `item` (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -95,7 +96,7 @@ CREATE TABLE `itemstock` (
 
 LOCK TABLES `itemstock` WRITE;
 /*!40000 ALTER TABLE `itemstock` DISABLE KEYS */;
-INSERT INTO `itemstock` VALUES (1,6.0,7),(1,6.5,11),(1,7.0,5),(1,7.5,0),(2,6.0,3),(2,6.5,0),(2,7.0,1),(2,7.5,14),(3,6.0,4),(3,6.5,10),(3,7.0,2),(3,7.5,3);
+INSERT INTO `itemstock` VALUES (1,6.0,7),(1,6.5,11),(1,7.0,8),(1,7.5,0),(2,6.0,3),(2,6.5,0),(2,7.0,1),(2,7.5,14),(3,6.0,4),(3,6.5,10),(3,7.0,2),(3,7.5,3);
 /*!40000 ALTER TABLE `itemstock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,6 +145,8 @@ CREATE TABLE `orders` (
   `feedback` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`orderid`),
   KEY `custid` (`custid`),
+  KEY `fk_payid` (`payid`),
+  CONSTRAINT `fk_payid` FOREIGN KEY (`payid`) REFERENCES `payments` (`payid`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`custid`) REFERENCES `customer` (`custId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -195,4 +198,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-05 13:25:28
+-- Dump completed on 2018-12-06 16:24:09

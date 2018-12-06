@@ -52,13 +52,26 @@
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="shop.html#shop">Shop</a>
             </li>
+			
+			<?php
+			//if user already login
+				if(isset($_SESSION['custid'])){
+					echo '<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="logout.php">Log out</a>
+						  </li>';
+				}
+			//no user is login
+				else{
+					
+					echo '<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="login.php">Login</a>
+						  </li>'; 
+				}
+			?>
+            
 
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="login.php">Login</a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="admin.html">Admin</a>
+              <a class="nav-link js-scroll-trigger" href="adminpage.php">Admin</a>
             </li>
 
             <li class="nav-item">

@@ -65,6 +65,7 @@
 	<!--include connector php-->
 	<?php
 		include_once 'connector.php';
+		session_start();
 	?>
   </head>
 
@@ -208,7 +209,7 @@ quis nostrud exercitation ullamco </p></dd>
 	</div> <!-- row.// -->
 	<hr>
 	<input type="submit" class="btn btn-lg btn-primary text-uppercase" value="Buy Now" name="buy">
-	<a href="#" class="btn btn-lg btn-outline-primary text-uppercase"> <i class="fas fa-shopping-cart"></i> Add to cart </a>
+	<!--<a href="#" class="btn btn-lg btn-outline-primary text-uppercase"> <i class="fas fa-shopping-cart"></i> Add to cart </a>-->
 	</form> <!--end of form-->
 </article> <!-- card-body.// -->
 		</aside> <!-- col.// -->

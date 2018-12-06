@@ -1,3 +1,4 @@
+
 <?php
 	
 	//function login validation
@@ -141,6 +142,67 @@
 		}
 	}
 	
+	function displayCartImage(){
+		if($_SESSION['itemId'] == 1 ){
+			//converse shoe picture
+			echo "img/converse/1.webp";
+		}
+		else if($_SESSION['itemId'] == 2 ){
+			//common project
+			echo "img/common/1.jfif";
+		}
+		else{
+			//ultraboost
+			echo "img/ultraboost/1.webp";
+		}
+	}
+	
+	function getProductName(){
+		if($_SESSION['itemId'] == 1 ){
+			//converse shoe picture
+			echo "Converse";
+		}
+		else if($_SESSION['itemId'] == 2 ){
+			//common project
+			echo "Common Project";
+		}
+		else{
+			//ultraboost
+			echo "Ultraboost";
+		}
+	}
+	
+	function getProductPrice(){
+		$pdo = new PDO('mysql:host=localhost;dbname=minimalist;charset=utf8','root','');
+		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+		if($_SESSION['itemId'] == 1 ){
+			//converse shoe picture
+			$sql="SELECT price FROM ITEM WHERE itemName LIKE '%converse%'";
+			$result = $pdo->query($sql);
+			while ($row = $result->fetch()) { 
+				 return $row['price'];
+			}
+		}
+		else if($_SESSION['itemId'] == 2 ){
+			//common project
+			$sql="SELECT price FROM ITEM WHERE itemName LIKE '%common%'";
+			$result = $pdo->query($sql);
+			while ($row = $result->fetch()) { 
+				 return $row['price'];
+			}
+		}
+		else{
+			//ultraboost
+			$sql="SELECT price FROM ITEM WHERE itemName LIKE '%ultraboost%'";
+			$result=$pdo->query($sql);
+			while ($row = $result->fetch()) { 
+				return $row['price'];
+			}
+		}
+	}
 
-
+	function getTotalPrice($price ,$quantity){
+		$total = $price * $quantity;
+		return number_format((double)$total,2,'.','');
+	}
 ?>

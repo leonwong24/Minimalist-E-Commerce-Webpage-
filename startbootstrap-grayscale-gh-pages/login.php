@@ -167,12 +167,16 @@ span.psw {
 		$_SESSION['itemId'] = $_POST['itemid'];
 		$_SESSION['size'] = $_POST['size'];
 		$_SESSION['quantity']=$_POST['quantity'];
-	}
-	/*if( is_null($_SESSION["custid"])){
+		
+		//if customer already login , prompt to cart immediately
+		/*if( is_null($_SESSION["custid"])){
 		echo '<script type="text/javascript">
 				window.location = "cart.php"
 			  </script>';
-	}*/
+		}*/
+	}
+	
+	
 	?>
 
 	</head>
@@ -199,9 +203,21 @@ span.psw {
               <a class="nav-link js-scroll-trigger active" href="shop.html">Shop</a>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="login.php">Login</a>
-            </li>
+            <?php
+			//if user already login
+				if(isset($_SESSION['custid'])){
+					echo '<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="logout.php">Log out</a>
+						  </li>';
+				}
+			//no user is login
+				else{
+					
+					echo '<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="login.php">Login</a>
+						  </li>'; 
+				}
+			?>
 
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="adminPage.php">Admin</a>
