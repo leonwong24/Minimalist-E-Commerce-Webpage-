@@ -74,6 +74,73 @@
 			}
 			echo "</table>";	
 	}
+	
+	function addStockMessage(){
+		$pdo = new PDO('mysql:host=localhost;dbname=minimalist;charset=utf8','root','');
+		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+		
+		//get number of quantity to be restock
+		$qtyToAdd = $_POST['qty'];
+		
+		//get productName
+		$sql = "SELECT itemName FROM item WHERE itemid = :itemId";
+		$result=$pdo->prepare($sql);
+		$result->bindValue(':itemId',$_POST['productName']);
+		$result->execute();
+		
+		while($row=$result->fetch()){
+			$productName = $row['itemName'];
+		}
+		
+		//check if stock is in the database
+		$sql = "SELECT COUNT(size) from itemStock WHERE itemid =:itemId and size =:size";
+		$result=$pdo->prepare($sql);
+		$result->bindValue(':itemId',$_POST['productName']);
+		$result->bindValue(':size',$_POST['size']);
+		$result->execute();
+		
+		while($row=$result->fetch()){
+			$count = $row['COUNT(size)'];
+		}
+		
+		//size exist
+		if(!($count == 0)){
+			//get previous quantity
+			$sql = "SELECT quantity FROM itemstock WHERE itemid = :itemId and size = :size";
+			$result=$pdo->prepare($sql);
+			$result->bindValue(':itemId',$_POST['productName']);
+			$result->bindValue(':size',$_POST['size']);
+			$result->execute();
+			
+			while($row=$result->fetch()){
+				$qty = $row['quantity'];
+			}
+			
+			//set the updated quantity
+			$qtyUpdated = $qty+$qtyToAdd;
+			
+			$sql ="UPDATE itemstock SET quantity = $qtyUpdated WHERE itemid = :itemId and size = :size";
+			$result=$pdo->prepare($sql);
+			$result->bindValue(':itemId',$_POST['productName']);
+			$result->bindValue(':size',$_POST['size']);
+			$result->execute();
+			
+			echo "You just restock " . $productName ."  with size ". $_POST['size'] ."<br>Now the current quantity of this shoe is  ".$qtyUpdated .".";
+		}
+		
+		//size does not exist
+		else{
+			$sql ="INSERT INTO itemStock VALUES(:itemid,:size,:quantity) ";
+			$result=$pdo->prepare($sql);
+			$result->bindValue(':itemid',$_POST['productName']);
+			$result->bindValue(':size',$_POST['size']);
+			$result->bindValue(':quantity',$_POST['qty']);
+			$result->execute();
+			
+			echo "You just added a new stock of ".$productName." with new size of ".$_POST['size'] ."<br>Now the current quantity of this shoe is ".$_POST['qty'] .".";
+		}
+	}
+	
 
 
 ?>

@@ -34,22 +34,29 @@
 	  
 	  <body>
 	  
-	  <form method="POST" action="" name="checkStock">
-			<label for="productName"><b>Product Name:</b></label>
+	  <form method="POST" action="" name="addStock">
+			<label for="productName"><b>Product Name:</b></label> <!-- select product-->
 			<select name="productName">
-				<option value="*" selected = "selected">All</option>
 				<option value="3">Ultraboost</option>
 				<option value="2">Common Project</option>
 				<option value="1">Converse</option>
 			</select>
-			<input type="submit" value="Submit Check Stock" name="checkStockSubmit">
+			
+			<label for="size"><b>Size:</b></label>
+			<input type="number" step="0.5" min="6" max="12" value="Please input the size you want to restock" name="size"> <!-- shoe size-->
+			
+			<label for="qty"><b>Quantity:</b></label>
+			<input type="number" step="1" min="1" value="Please input the quantity you want to restock" name="qty"> <!-- quantity -->
+			
+			
+			<input type="submit" value="Submit Add Stock" name="addStockSubmit">
 		</form>
 	  
 	  <?php
-		displayCheckStockTable();
+		if(isset($_POST['addStockSubmit'])){
+			addStockMessage();
+		}
 	  ?>
-		
-		
 		
 	  </body>
 	  
