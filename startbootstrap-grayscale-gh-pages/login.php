@@ -169,11 +169,11 @@ span.psw {
 		$_SESSION['quantity']=$_POST['quantity'];
 		
 		//if customer already login , prompt to cart immediately
-		/*if( is_null($_SESSION["custid"])){
+		if(isset($_SESSION["custid"])){
 		echo '<script type="text/javascript">
-				window.location = "cart.php"
+				window.location = "test.php"
 			  </script>';
-		}*/
+		}
 	}
 	
 	

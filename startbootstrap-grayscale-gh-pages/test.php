@@ -16,6 +16,19 @@
 	(double)$price = getProductPrice();
 ?>
 
+<?php
+	if(!isset($_SEESION['itemId'])){
+		echo '<script type="text/javascript">
+				window.location = "shop.html"
+			  </script>';
+		exit();
+	}
+	else if(!isset($_SESSION['custid'])){
+		echo '<script type="text/javascript">
+				window.location = "login.php"
+			  </script>';
+		exit();
+?>
 <div class="container">
 	<div class="row">
 		<div class="col-xs-8">
@@ -61,9 +74,9 @@
 							<h4 class="text-right">Total <strong><?php echo (getTotalPrice($price,$quantity)); ?></strong></h4> <!--php total price-->
 						</div>
 						<div class="col-xs-3">
-							<button type="button" class="btn btn-success btn-block">
+							<a href="checkout.php" class="btn btn-success btn-block">
 								Checkout
-							</button>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -71,3 +84,4 @@
 		</div>
 	</div>
 </div>
+

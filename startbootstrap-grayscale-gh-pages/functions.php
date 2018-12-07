@@ -205,4 +205,5 @@
 		$total = $price * $quantity;
 		return number_format((double)$total,2,'.','');
 	}
+	
 ?>
