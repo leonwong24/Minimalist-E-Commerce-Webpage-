@@ -21,6 +21,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/grayscale.min.css" rel="stylesheet">
+		<link href="css/dropdown.css" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -59,6 +60,7 @@
       width: 100%;
       height: 100%;
   }
+  
 	</style>
 	
 <!--include connector php-->
@@ -87,20 +89,48 @@
               <a class="nav-link js-scroll-trigger" href="index.php#projects">Products</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger active" href="shop.html">Shop</a>
+              <a class="nav-link js-scroll-trigger active" href="shop.php">Shop</a>
+            </li>
+
+            <?php
+			//if user already login
+				if(isset($_SESSION['custid'])){
+					echo '<li class="nav-item">
+							<div class="dropdown">
+								<button class="dropbtn nav-link js-scroll-trigger">User</button>
+									<div class="dropdown-content">
+										<a href="logout.php">Log Out</a>
+										<a href="checkStatus.php">Check Order Status</a>
+										<a href="changeDetails.php">Change Details</a>
+									</div>
+							</div>
+						</li>';
+				}
+			//no user is login
+				else{
+					
+					echo '<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="login.php">Login</a>
+						  </li>'; 
+				}
+			?>
+
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="adminPage.php">Admin</a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="login.php">Login</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#signup">Contact</a>
             </li>
-
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="admin.html">Admin</a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
-            </li>
+			
+			<?php
+			//if an item is in cart
+				if(isset($_SESSION['itemId'])){
+					echo '<li class="nav-item">
+							  <a class="nav-link js-scroll-trigger" href="cart.php">Check Out</a>
+						</li>';
+				}
+			 ?>
 
           </ul>
         </div>
@@ -172,7 +202,7 @@ quis nostrud exercitation ullamco </p></dd>
 </dl>  <!-- item-property-hor .// -->
 
 <hr>
-<form action="login.php" method="post" name="common_buyform"> <!--start of buy form-->
+<form action="" method="post" name="common_buyform"> <!--start of buy form-->
 	<input type="hidden" value=2 name="itemid"> <!--common itemid = 2 -->
 	<div class="row">
 		<div class="col-sm-5">
@@ -180,7 +210,7 @@ quis nostrud exercitation ullamco </p></dd>
 			  <dt>Quantity: </dt>
 			  <dd>
 			  	<select class="form-control form-control-sm" style="width:70px;" name="quantity"> <!--common project buy quantity-->
-			  		<option value = 1> 1 </option>
+			  		<option value = 1 selected="selected"> 1 </option>
 			  		<option value = 2> 2 </option>
 			  		<option value = 3> 3 </option>
 			  	</select>
@@ -208,6 +238,35 @@ quis nostrud exercitation ullamco </p></dd>
 	<input type="submit" class="btn btn-lg btn-primary text-uppercase" value="Buy Now" name="buy">  <!-- submit button-->
 	<!--<a href="#" class="btn btn-lg btn-outline-primary text-uppercase"> <i class="fas fa-shopping-cart"></i> Add to cart </a>-->
 	</form> <!--end of form-->
+	
+	<?php
+	//validate quantity selected is lower than quantity have in the database
+		if(isset($_POST['buy'])){
+			//get the itemstock quantity
+			$sql = "SELECT quantity from itemstock WHERE itemId = 2 and size =:size";
+			$result = $pdo->prepare($sql);
+			$result->bindValue(':size',$_POST['size']);
+			$result->execute();
+			while($row=$result->fetch()){
+				$quantity = $row['quantity'];
+			}
+			
+			if($_POST['quantity'] > $quantity ){
+				echo 'The stock is not enough , please reduce the quantity needed or pick another product';
+			}
+			
+			else{
+				$_SESSION['itemId'] = $_POST['itemid'];
+				$_SESSION['size'] = $_POST['size'];
+				$_SESSION['quantity']=$_POST['quantity'];
+				
+				echo '<script type="text/javascript">
+						window.location = "login.php"
+					</script>';
+			}
+		}
+	
+	?>
 </article> <!-- card-body.// -->
 		</aside> <!-- col.// -->
 	</div> <!-- row.// -->

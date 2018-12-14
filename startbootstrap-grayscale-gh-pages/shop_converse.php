@@ -59,6 +59,42 @@
       width: 100%;
       height: 100%;
   }
+  
+ 	/* Dropdown Button */
+.dropbtn {
+  border: none;
+  background-color:rgba(0,0,0,0);
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;} 
 	</style>
 
 <!--include connector php-->
@@ -90,12 +126,19 @@
               <a class="nav-link js-scroll-trigger active" href="shop.html">Shop</a>
             </li>
 
-            <?php
+           <?php
 			//if user already login
 				if(isset($_SESSION['custid'])){
 					echo '<li class="nav-item">
-							<a class="nav-link js-scroll-trigger" href="logout.php">Log out</a>
-						  </li>';
+							<div class="dropdown">
+								<button class="dropbtn nav-link js-scroll-trigger">User</button>
+									<div class="dropdown-content">
+										<a href="logout.php">Log Out</a>
+										<a href="checkStatus.php">Check Order Status</a>
+										<a href="changeDetails.php">Change Details</a>
+									</div>
+							</div>
+						</li>';
 				}
 			//no user is login
 				else{
@@ -111,8 +154,17 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#signup">Contact</a>
             </li>
+			
+			<?php
+			//if an item is in cart
+				if(isset($_SESSION['itemId'])){
+					echo '<li class="nav-item">
+							  <a class="nav-link js-scroll-trigger" href="cart.php">Check Out</a>
+						</li>';
+				}
+			 ?>
 
           </ul>
         </div>
@@ -186,7 +238,7 @@ quis nostrud exercitation ullamco </p></dd>
 </dl>  <!-- item-property-hor .// -->
 
 <hr>
-	<form action="login.php" method="post" name="converse_buyform"> <!--start of buy form-->
+	<form action="" method="post" name="converse_buyform"> <!--start of buy form-->
 	<input type="hidden" value=1 name="itemid"> <!--converse itemid = 1 -->
 	<div class="row">
 		<div class="col-sm-5">
@@ -194,7 +246,7 @@ quis nostrud exercitation ullamco </p></dd>
 			  <dt>Quantity: </dt>
 			  <dd>
 			  	<select class="form-control form-control-sm" style="width:70px;" name="quantity">
-			  		<option value = 1> 1 </option>
+			  		<option value = 1 selected="selected"> 1 </option>
 			  		<option value = 2> 2 </option>
 			  		<option value = 3> 3 </option>
 			  	</select>
@@ -223,6 +275,35 @@ quis nostrud exercitation ullamco </p></dd>
 	<!--<a href="#" class="btn btn-lg btn-outline-primary text-uppercase"> <i class="fas fa-shopping-cart"></i> Add to cart </a>-->
 	
 	</form>  <!--end of buy form-->
+	<?php
+	//validate quantity selected is lower than quantity have in the database
+		if(isset($_POST['buy'])){
+			//get the itemstock quantity
+			$sql = "SELECT quantity from itemstock WHERE itemId = 1 and size =:size";
+			$result = $pdo->prepare($sql);
+			$result->bindValue(':size',$_POST['size']);
+			$result->execute();
+			while($row=$result->fetch()){
+				$quantity = $row['quantity'];
+			}
+			
+			if($_POST['quantity'] > $quantity ){
+				echo 'The stock is not enough , please reduce the quantity needed or pick another product';
+			}
+			
+			else{
+				$_SESSION['itemId'] = $_POST['itemid'];
+				$_SESSION['size'] = $_POST['size'];
+				$_SESSION['quantity']=$_POST['quantity'];
+				
+				echo '<script type="text/javascript">
+						window.location = "login.php"
+					</script>';
+			}
+		}
+	
+	?>
+	
 </article> <!-- card-body.// -->
 		</aside> <!-- col.// -->
 	</div> <!-- row.// -->

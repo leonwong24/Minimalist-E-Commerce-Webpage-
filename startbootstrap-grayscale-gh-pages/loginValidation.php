@@ -25,8 +25,15 @@
 					echo "Login successful";
 	
 					
-					//redirect to car page
-					header('location:shop.html');
+					//redirect to cart page if cart exist
+					if(isset($_SESSION['itemId'])){
+						echo '<script type="text/javascript">
+						window.location = "cart.php"
+							</script>';
+					}
+					else{
+						header('location:shop.php');
+					}
 				}
 			}
 			
@@ -34,5 +41,5 @@
 				echo 'You might enter the wrong email or password,please check again';
 				echo '<a href="login.php">CLick here to go back</a>';
 			}
-			include'shop.html';
+			include'shop.php';
 ?>

@@ -2,6 +2,7 @@
 	<?php
 		include_once 'connector.php';
 		include 'functions.php';
+		session_start();
 	?>
 
 
@@ -38,7 +39,7 @@ form {
 }
 
 /* Full-width inputs */
-input[type=text], input[type=password] {
+input {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -73,11 +74,6 @@ button:hover {
 
 }
 
-/* Center the avatar image inside this container */
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-}
 
 /* Avatar image */
 img.avatar {
@@ -126,7 +122,7 @@ span.psw {
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 5px auto; /* 15% from the top and centered */
+    margin: 5%; /* 15% from the top and centered */
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
 }
@@ -164,6 +160,15 @@ span.psw {
     from {transform: scale(0)} 
     to {transform: scale(1)}
 }
+
+#result{
+margin-left:40%;	
+}
+
+
+table ,th ,td{
+border: 1px solid black;
+	}
 </style>
 		
 	  </head>
@@ -186,20 +191,44 @@ span.psw {
               <a class="nav-link js-scroll-trigger" href="index.php#projects">Products</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger active" href="shop.html">Shop</a>
+              <a class="nav-link js-scroll-trigger active" href="shop.php">Shop</a>
+            </li>
+
+            <?php
+			//if user already login
+				if(isset($_SESSION['custid'])){
+					echo '<li class="nav-item dropdown">
+							<a class="nav-link js-scroll-trigger" href="logout.php">Log out</a>
+						  </li>
+							<li class="nav-item dropdown">
+							<a class="nav-link js-scroll-trigger" href="checkStatus.php">Check Status</a>
+						  </li>';
+				}
+			//no user is login
+				else{
+					
+					echo '<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="login.php">Login</a>
+						  </li>'; 
+				}
+			?>
+
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="adminPage.php">Admin</a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="login.php">Login</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#signup">Contact</a>
             </li>
-
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="admin.html">Admin</a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
-            </li>
+			
+			<?php
+			//if an item is in cart
+				if(isset($_SESSION['itemid'])){
+					echo '<li class="nav-item">
+							  <a class="nav-link js-scroll-trigger" href="cart.php">Check Out</a>
+							</li>';
+				}
+			 ?>
 
           </ul>
         </div>
@@ -210,21 +239,27 @@ span.psw {
 	<button onclick="document.getElementById('checkstock-modal').style.display='block'">Check Stock</button>
 	<!-- Button to open the modal add stock form -->
 	<button onclick="document.getElementById('addstock-modal').style.display='block'">Add Stock</button>
+	<!-- Button to open the modal change order status form -->
+	<button onclick="document.getElementById('changeStatus-modal').style.display='block'">Change Status</button>
+	<!-- Button to open the modal delete item form -->
+	<button onclick="document.getElementById('removeItem-modal').style.display='block'">Remove Item</button>
 	  
 	  
 	<!-- check stock modal-->
 	<div id ="checkstock-modal" class="modal">
 	<span onclick="document.getElementById('checkstock-modal').style.display='none'" class="close" title="Close Modal">&times;</span> <!--Close button-->
 	  <form method="POST" action="" name="checkStock" class="modal-content animate">
-			<label for="productName"><b>Product Name:</b></label>
-			<select name="productName">
-				<option value="*" selected = "selected">All</option>
-				<option value="3">Ultraboost</option>
-				<option value="2">Common Project</option>
-				<option value="1">Converse</option>
-			</select>
-			<br>
-			<input type="submit" value="Submit Check Stock" name="checkStockSubmit">
+			<div class="container">
+				<label for="productName"><b>Product Name:</b></label>
+				<select name="productName">
+					<option value="*" selected = "selected">All</option>
+					<option value="3">Ultraboost</option>
+					<option value="2">Common Project</option>
+					<option value="1">Converse</option>
+				</select>
+				<br>
+				<input type="submit" value="Submit Check Stock" name="checkStockSubmit">
+			</div>
 	  </form>
 	</div>
 	
@@ -232,35 +267,110 @@ span.psw {
 	<div id ="addstock-modal" class="modal">
 	<span onclick="document.getElementById('addstock-modal').style.display='none'" class="close" title="Close Modal">&times;</span> <!--Close button-->
 	  <form method="POST" action="" name="addStock" class="modal-content animate">
+		<div class="container">		
 			<label for="productName"><b>Product Name:</b></label> <!-- select product-->
-			<select name="productName">
-				<option value="3">Ultraboost</option>
-				<option value="2">Common Project</option>
-				<option value="1">Converse</option>
-			</select>
-			
-			<label for="size"><b>Size:</b></label>
-			<input type="number" step="0.5" min="6" max="12" value="Please input the size you want to restock" name="size"> <!-- shoe size-->
-			
-			<label for="qty"><b>Quantity:</b></label>
-			<input type="number" step="1" min="1" value="Please input the quantity you want to restock" name="qty"> <!-- quantity -->
-			
-			
-			<input type="submit" value="Submit Add Stock" name="addStockSubmit">
+				<select name="productName">
+					<option value="3">Ultraboost</option>
+					<option value="2">Common Project</option>
+					<option value="1">Converse</option>
+				</select>
+				
+				<label for="size"><b>Size:</b></label>
+				<input type="number" step="0.5" min="6" max="12" value="Please input the size you want to restock" name="size"> <!-- shoe size-->
+				
+				<label for="qty"><b>Quantity:</b></label>
+				<input type="number" step="1" min="1" value="Please input the quantity you want to restock" name="qty"> <!-- quantity -->
+				
+				
+				<input type="submit" value="Submit Add Stock" name="addStockSubmit">
+		</div>
 		</form>
 	</div>
 	
-	  <?php
-		if(isset($_POST['checkStockSubmit'])){
-			displayCheckStockTable();
-		}
-		
-		else if(isset($_POST['addStockSubmit'])){
-			addStockMessage();
-		}
-	  ?>
-		
-		
+	
+	<!--change status modal -->
+	<div id ="changeStatus-modal" class="modal">
+	<span onclick="document.getElementById('changeStatus-modal').style.display='none'" class="close" title="Close Modal">&times;</span> <!--Close button-->
+	  <form method="POST" action="" name="changeStatus" class="modal-content animate">
+		<div class="container">		
+			<label for="orderId"><b>Select Order ID:</b></label>
+				<select name="orderId">
+				<?php
+				$sql="SELECT * FROM Orders";
+				$result = $pdo->query($sql);
+				while ($row = $result->fetch()) { 
+					echo '<option value ="'.$row['orderid'].'">'.$row['orderid'].'</option>';
+				}
+				?>
+				</select>
+				
+				<input value="Submit" name="changeStatusSubmit" type="submit">
+		</div>
+		</form>
+	</div>
+	
+	<!--show remove item modal -->
+	<div id ="removeItem-modal" class="modal">
+	<span onclick="document.getElementById('removeItem-modal').style.display='none'" class="close" title="Close Modal">&times;</span> <!--Close button-->
+	  <form method="POST" action="" name="removeItem" class="modal-content animate">
+		<div class="container">
+			<label for="itemid"></b>Select Item:</b></label>
+			<select name="itemid">
+					<?php
+						$sql="SELECT itemName,itemid FROM item";
+						$result = $pdo->query($sql);
+						while ($row = $result->fetch()) { 
+							echo '<option value ="'.$row['itemid'].'">'.$row['itemName'].'</option>';
+						}
+					?>
+			</select>
+			<input type="submit" name="showItemToDelete" value="showItemToDelete">
+		</div>
+	  </form>
+	 </div>
+	 
+	 
+	<div id="result">
+		<?php
+			if(isset($_POST['checkStockSubmit'])){
+				displayCheckStockTable();
+			}
+			
+			else if(isset($_POST['addStockSubmit'])){
+				addStockMessage();
+			}
+			
+			else if(isset($_POST['changeStatusSubmit'])){
+				changeStatus();
+			}
+			
+			else if(isset($_POST['showItemToDelete'])){
+				deleteItem();
+			}
+			
+			
+			if(isset($_POST['changeStatusTextSubmit'])){
+				$sql="UPDATE orders SET status = :status WHERE orderid = :orderid";
+				$result=$pdo->prepare($sql);
+				$result->bindValue(':status',$_POST['statusSubmit']);
+				$result->bindValue(':orderid',$_POST['orderIdInput']);
+				$result->execute();
+				
+				echo "You just update the order status of ".$_POST['orderIdInput'];
+			}
+			
+			if(isset($_POST['deleteItemRowSubmit'])){
+				$sql ="DELETE FROM itemstock WHERE itemid=:itemid AND size=:size";
+				$result=$pdo->prepare($sql);
+				$result->bindValue(':itemid',$_POST['itemid']);
+				$result->bindValue(':size',$_POST['deleteSize']);
+				$result->execute();
+				
+				echo "You have delete item with itemid".$_POST['itemid']."size ".$_POST['deleteSize'];
+			}
+		  ?>
+
+	</div>	
 		
 	  </body>
 	  

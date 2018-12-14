@@ -6,7 +6,7 @@
 
 <?php
 //unset customer id session
-	unset($_SESSION['custid']);
+	session_destroy();
 
 	//redirect to home page
 	header('location:index.php');

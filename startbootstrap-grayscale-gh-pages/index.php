@@ -20,6 +20,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/grayscale.min.css" rel="stylesheet">
+	<link href="css/dropdown.css" rel="stylesheet">
 
     <!--include connector php-->
 	
@@ -27,6 +28,8 @@
 		session_start();
 		include_once 'connector.php';
 	?>
+	
+
   </head>
 
   <body id="page-top">
@@ -50,15 +53,22 @@
               <a class="nav-link js-scroll-trigger" href="#projects">Products</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="shop.html#shop">Shop</a>
+              <a class="nav-link js-scroll-trigger" href="shop.php#shop">Shop</a>
             </li>
 			
 			<?php
 			//if user already login
 				if(isset($_SESSION['custid'])){
 					echo '<li class="nav-item">
-							<a class="nav-link js-scroll-trigger" href="logout.php">Log out</a>
-						  </li>';
+							<div class="dropdown">
+								<button class="dropbtn nav-link js-scroll-trigger">User</button>
+									<div class="dropdown-content">
+										<a href="logout.php">Log Out</a>
+										<a href="checkStatus.php">Check Order Status</a>
+										<a href="changeDetails.php">Change Details</a>
+									</div>
+							</div>
+						</li>';
 				}
 			//no user is login
 				else{
@@ -77,7 +87,15 @@
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
             </li>
-
+			
+			<?php
+			//if an item is in cart
+				if(isset($_SESSION['itemId'])){
+					echo '<li class="nav-item">
+							  <a class="nav-link js-scroll-trigger" href="cart.php">Check Out</a>
+							</li>';
+				}
+			 ?>
           </ul>
         </div>
       </div>
@@ -119,8 +137,8 @@
           </div>
           <div class="col-xl-4 col-lg-5">
             <div class="featured-text text-center text-lg-left">
-              <h4>Ultraboost</h4>
-              <p class="text-black-50 mb-0">These running shoes combine comfort and high-performance technology for a best-ever-run feeling. They have a stretchy knit upper that adapts to the changing shape of your foot as you run. Responsive midsole cushioning and a flexible outsole deliver a smooth and energised ride.</p>
+              <h4>White Shoe</h4>
+              <p class="text-black-50 mb-0">This is some text talking about this website which is us only selling premium white shoe with premium price. This is a demo website for second year modules Server Side Development.</p>
             </div>
           </div>
         </div>

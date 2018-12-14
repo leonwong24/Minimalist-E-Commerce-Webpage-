@@ -23,6 +23,11 @@
     <!-- Custom styles for this template -->
     <link href="css/grayscale.min.css" rel="stylesheet">
 	
+	<?php
+		session_start();
+	
+	?>
+	
 	<style>
 	/* Bordered form */
 form {
@@ -157,26 +162,52 @@ span.psw {
     to {transform: scale(1)}
 }
 
+/* Dropdown Button */
+.dropbtn {
+  border: none;
+  background-color:rgba(0,0,0,0);
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;} 
+
 	</style>
 	
 	
 	<?php
-	//start cart session
-	if(isset($_POST['buy'])){
-		session_start();
-		$_SESSION['itemId'] = $_POST['itemid'];
-		$_SESSION['size'] = $_POST['size'];
-		$_SESSION['quantity']=$_POST['quantity'];
-		
 		//if customer already login , prompt to cart immediately
 		if(isset($_SESSION["custid"])){
 		echo '<script type="text/javascript">
-				window.location = "test.php"
+				window.location = "cart.php"
 			  </script>';
 		}
-	}
-	
-	
 	?>
 
 	</head>
@@ -203,12 +234,20 @@ span.psw {
               <a class="nav-link js-scroll-trigger active" href="shop.html">Shop</a>
             </li>
 
-            <?php
+
+			<?php
 			//if user already login
 				if(isset($_SESSION['custid'])){
 					echo '<li class="nav-item">
-							<a class="nav-link js-scroll-trigger" href="logout.php">Log out</a>
-						  </li>';
+							<div class="dropdown">
+								<button class="dropbtn nav-link js-scroll-trigger">User</button>
+									<div class="dropdown-content">
+										<a href="logout.php">Log Out</a>
+										<a href="checkStatus.php">Check Order Status</a>
+										<a href="changeDetails.php">Change Details</a>
+									</div>
+							</div>
+						</li>';
 				}
 			//no user is login
 				else{

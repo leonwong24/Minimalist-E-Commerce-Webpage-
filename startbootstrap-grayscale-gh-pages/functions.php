@@ -1,35 +1,6 @@
 
 <?php
-	
-	//function login validation
-	/*function loginValidation($email,$password){
-		$pdo = new PDO('mysql:host=localhost;dbname=minimalist;charset=utf8','root','');
-		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-		$sql = 'SELECT COUNT(email) from customer WHERE email = $email and password = $password';
-        $result = $pdo->prepare($sql);
-        $result->execute();
 
-            if($result->fetchColumn() >0){
-				//login success
-				$sql = 'SELECT * FROM customer WHERE email = $email and password = $password';
-				$result=pdo->prepare($sql);
-				$result->execute();
-
-				while($row = $result->fetch()){
-					$_SESSION['custid'] = $row['custId'];
-					echo "Login successful";
-					
-					//redirect to car page
-					/*echo '<script type="text/javascript">
-							window.location = "cart.php"
-						 </script>';
-				}
-			}
-			else{
-				echo 'You might enter the wrong email or password,please check again';
-				echo '<a href="login.php">CLick here to go back</a>';
-			}
-	}*/
 	
 	
 	//function that display the form that allows admin to check stock
@@ -204,6 +175,60 @@
 	function getTotalPrice($price ,$quantity){
 		$total = $price * $quantity;
 		return number_format((double)$total,2,'.','');
+	}
+	
+	function changeStatus(){
+		$pdo = new PDO('mysql:host=localhost;dbname=minimalist;charset=utf8','root','');
+		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+		$sql="SELECT * FROM Orders WHERE orderid =:orderId";
+		$result=$pdo->prepare($sql);
+		$result->bindValue(':orderId',$_POST['orderId']);
+		$result->execute();
+		
+		echo '<form method="POST" action="adminPage.php" name="changeStatusText">';
+			echo "<br><table>
+					<tr><th>Customer Id</th>
+					<th>Item Id</th>
+					<th>Size</th>
+					<th>Quantity</th>
+					<th>Order Date</th>
+					<th>Status</th></tr>";
+			while ($row = $result->fetch()) { 	
+			$status = $row['status'];
+			$orderId =$row['orderid'];
+			
+			//pass the orderid back to the form
+			echo '<input type="hidden" name="orderIdInput" value="'.$orderId.'">';
+				echo "<tr>
+						<td>".$row['custid']."</td><td>".$row['itemid']."</td><td>".$row['size']."</td><td>".$row['quantity']."</td><td>".$row['orderdate']."</td><td><input name ='statusSubmit' type='text' value=".$row['status']."></td></tr>";
+			}
+			echo '<input type="submit" value="Submit Change" name="changeStatusTextSubmit">';
+	}
+	
+	function deleteItem(){
+		$pdo = new PDO('mysql:host=localhost;dbname=minimalist;charset=utf8','root','');
+		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+		
+		$itemid=$_POST['itemid'];
+		
+		$sql = "SELECT itemstock.size,itemstock.quantity,item.itemname FROM itemstock INNER JOIN item ON item.itemID=itemstock.itemId WHERE item.itemId =$itemid";
+		$result=$pdo->prepare($sql);
+		$result->bindValue(':itemid',$itemid);
+		$result->execute();
+		
+		echo '<form method="POST" action="adminPage.php" name="deleteItemRow">';
+		echo '<input type="hidden" name="itemid" value="'.$itemid.'">';
+		echo '<table>
+				<tr><th>Item Name</th>
+				<th>Size</th>
+				<th>Quantity</th>
+				<th>Action</th></tr>';
+				
+		while($row=$result->fetch()){
+			echo "<tr><td>".$row['itemname']."</td><td>".$row['size']."</td><td>".$row['quantity']."</td><td><input name ='deleteSize' type='radio' value='".$row['size']."'></td></tr>";
+		}
+		
+		echo '<input type="submit" value="submit" name="deleteItemRowSubmit">';
 	}
 	
 ?>
